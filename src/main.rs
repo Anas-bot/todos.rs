@@ -1,13 +1,12 @@
-mod constants;
-
 use crate::constants::*;
-
+use crate::app_struct::*;
 use eframe::egui::RichText;
 use eframe::egui::{vec2, Color32, Context, FontId};
 use eframe::{egui, run_native, Frame};
 use egui_extras::RetainedImage;
 
-
+mod constants;
+mod app_struct;
 
 fn main() {
     let native_options = eframe::NativeOptions {
@@ -23,36 +22,6 @@ fn main() {
     )
     .expect("TODO: panic message");
 }
-struct Visuals {
-    all_button_bg_color: Color32,
-    completed_button_bg_color: Color32,
-    active_button_bg_color: Color32,
-    bin_img_texture_handle: RetainedImage,
-}
-
-impl Visuals {
-    fn reset_button_color(&mut self) {
-        self.active_button_bg_color = TRANSPARENT;
-        self.all_button_bg_color = TRANSPARENT;
-        self.completed_button_bg_color = TRANSPARENT;
-    }
-}
-
-struct Todos {
-    todos: Vec<(String, bool)>,
-    new_todo: String,
-    filter: Filter,
-    visuals: Visuals,
-    to_delete_todos: Vec<usize>,
-}
-
-#[derive(Default, PartialEq)]
-enum Filter {
-    #[default]
-    All,
-    Active,
-    Completed,
-}
 
 impl Todos {
     fn new(cc: &eframe::CreationContext<'_>) -> Self {
@@ -67,26 +36,6 @@ impl Todos {
     }
 }
 
-impl Default for Todos {
-    fn default() -> Self {
-        Todos {
-            todos: vec![],
-            new_todo: "".to_string(),
-            filter: Default::default(),
-            visuals: Visuals {
-                all_button_bg_color: TRANSPARENT,
-                completed_button_bg_color: TRANSPARENT,
-                active_button_bg_color: TRANSPARENT,
-                bin_img_texture_handle: RetainedImage::from_image_bytes(
-                    "bin",
-                    include_bytes!("bin.png"),
-                )
-                .expect("reasons"),
-            },
-            to_delete_todos: vec![],
-        }
-    }
-}
 
 impl eframe::App for Todos {
     fn update(&mut self, ctx: &Context, frame: &mut Frame) {
