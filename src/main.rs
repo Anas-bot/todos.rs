@@ -1,18 +1,18 @@
-use crate::constants::*;
 use crate::app_struct::*;
-use eframe::egui::RichText;
-use eframe::egui::{vec2, Color32, Context, FontId};
+use crate::constants::*;
+
+use eframe::egui::{vec2, Color32, Context, FontId, RichText};
 use eframe::{egui, run_native, Frame};
 use egui_extras::RetainedImage;
 
-mod constants;
 mod app_struct;
+mod constants;
 
 fn main() {
     let native_options = eframe::NativeOptions {
-        initial_window_size: Option::from(vec2(WIN_WIDTH, WIN_HEIGHT)),
-        min_window_size: Option::from(vec2(WIN_WIDTH, WIN_HEIGHT)),
-        max_window_size: Option::from(vec2(WIN_WIDTH, WIN_HEIGHT)),
+        initial_window_size: Some(vec2(WIN_WIDTH, WIN_HEIGHT)),
+        min_window_size: Some(vec2(WIN_WIDTH, WIN_HEIGHT)),
+        max_window_size: Some(vec2(WIN_WIDTH, WIN_HEIGHT)),
         ..eframe::NativeOptions::default()
     };
     run_native(
@@ -35,7 +35,6 @@ impl Todos {
         self.to_delete_todos.clear()
     }
 }
-
 
 impl eframe::App for Todos {
     fn update(&mut self, ctx: &Context, frame: &mut Frame) {
