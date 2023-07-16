@@ -3,6 +3,7 @@ use crate::constants::*;
 
 use eframe::egui::{vec2, Color32, Context, FontId, RichText};
 use eframe::{egui, run_native, Frame};
+use egui::{Align, Button, CentralPanel, Checkbox, ImageButton, Key, Layout, TextEdit};
 use egui_extras::RetainedImage;
 
 mod app_struct;
@@ -38,13 +39,13 @@ impl Todos {
 
 impl eframe::App for Todos {
     fn update(&mut self, ctx: &Context, frame: &mut Frame) {
-        egui::CentralPanel::default().show(ctx, |ui| {
+        CentralPanel::default().show(ctx, |ui| {
             ui.vertical_centered(|ui| {
                 ui.add_space(40.0);
                 ui.label(RichText::new("todos.rs").size(HEADING_FONT_SIZE));
                 ui.add_space(VERTICAL_SPACING);
                 let text_edit = ui.add(
-                    egui::TextEdit::singleline(&mut self.new_todo)
+                    TextEdit::singleline(&mut self.new_todo)
                         .hint_text(
                             RichText::new("What needs to be done?").size(PLACEHOLDER_FONT_SIZE),
                         )
@@ -55,7 +56,7 @@ impl eframe::App for Todos {
                         .desired_width(TEXTBOX_WIDTH)
                         .margin(vec2(16.0, 8.0)),
                 );
-                if text_edit.lost_focus() && ui.input(|i| i.key_pressed(egui::Key::Enter)) {
+                if text_edit.lost_focus() && ui.input(|i| i.key_pressed(Key::Enter)) {
                     self.todos.push((self.new_todo.clone(), false));
                     self.new_todo.clear();
                 }
@@ -75,22 +76,22 @@ impl eframe::App for Todos {
                     );
                 }
 
-                ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
+                ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                     ui.add_space(HORIZONTAL_SPACING);
                     let completed = ui.add(
-                        egui::Button::new(RichText::new("Completed").size(NORMAL_FONT_SIZE))
+                        Button::new(RichText::new("Completed").size(NORMAL_FONT_SIZE))
                             .rounding(BUTTON_ROUNDING)
                             .fill(self.visuals.completed_button_bg_color),
                     );
                     ui.add_space(SPACING_BETWEEN_BUTTONS);
                     let active = ui.add(
-                        egui::Button::new(RichText::new("Active").size(NORMAL_FONT_SIZE))
+                        Button::new(RichText::new("Active").size(NORMAL_FONT_SIZE))
                             .rounding(BUTTON_ROUNDING)
                             .fill(self.visuals.active_button_bg_color),
                     );
                     ui.add_space(SPACING_BETWEEN_BUTTONS);
                     let all = ui.add(
-                        egui::Button::new(RichText::new("All").size(NORMAL_FONT_SIZE))
+                        Button::new(RichText::new("All").size(NORMAL_FONT_SIZE))
                             .rounding(BUTTON_ROUNDING)
                             .fill(self.visuals.all_button_bg_color),
                     );
@@ -119,7 +120,7 @@ impl eframe::App for Todos {
                         match self.filter {
                             Filter::Completed => {
                                 if todo.1 {
-                                    ui.add(egui::Checkbox::new(
+                                    ui.add(Checkbox::new(
                                         &mut todo.1,
                                         RichText::new(&todo.0).size(CHECKBOX_TEXT_FONT_SIZE),
                                     ));
@@ -127,14 +128,14 @@ impl eframe::App for Todos {
                             }
                             Filter::Active => {
                                 if !todo.1 {
-                                    ui.add(egui::Checkbox::new(
+                                    ui.add(Checkbox::new(
                                         &mut todo.1,
                                         RichText::new(&todo.0).size(CHECKBOX_TEXT_FONT_SIZE),
                                     ));
                                 }
                             }
                             Filter::All => {
-                                ui.add(egui::Checkbox::new(
+                                ui.add(Checkbox::new(
                                     &mut todo.1,
                                     RichText::new(&todo.0).size(CHECKBOX_TEXT_FONT_SIZE),
                                 ));
@@ -146,10 +147,10 @@ impl eframe::App for Todos {
                             || (self.filter == Filter::All)
                         {
                             ui.with_layout(
-                                egui::Layout::right_to_left(egui::Align::Center),
+                                Layout::right_to_left(Align::Center),
                                 |ui| {
                                     ui.add_space(HORIZONTAL_SPACING);
-                                    let bin_image_button = ui.add(egui::ImageButton::new(
+                                    let bin_image_button = ui.add(ImageButton::new(
                                         self.visuals.bin_img_texture_handle.texture_id(ctx),
                                         IMAGE_DIMENSIONS,
                                     ));
