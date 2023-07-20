@@ -118,11 +118,24 @@ impl eframe::App for Todos {
                     ui.horizontal(|ui| {
                         ui.add_space(HORIZONTAL_SPACING);
                         if todo.is_editing {
+
                             let text_edit = ui.add(TextEdit::singleline(&mut todo.todo).font(FontId {
                                 size: CHECKBOX_TEXT_FONT_SIZE,
                                 family: Default::default(),
                             })
                                 .margin(vec2(8.0, 4.0)));
+
+                            if text_edit.lost_focus() && ui.input(|i| i.key_pressed(Key::Enter)) {
+                                todo.is_editing = false;
+                            }
+
+                            ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                                ui.add_space(HORIZONTAL_SPACING);
+                                let tick_image_button = ui.add(ImageButton::new(self.visuals.tick_img_texture_handle.texture_id(ctx), IMAGE_DIMENSIONS));
+                                if tick_image_button.clicked(){
+                                    todo.is_editing = false;
+                                }
+                            });
                         }
 
                         else {
