@@ -3,16 +3,16 @@ use eframe::egui::Color32;
 use egui_extras::RetainedImage;
 
 pub struct Todo{
-    todo: String,
-    active: bool,
-    is_editing: bool,
+    pub todo: String,
+    pub checked: bool,
+    pub is_editing: bool,
 }
 
 impl Todo {
-    fn new(todo: String) -> Self{
+    pub fn new(todo: String) -> Self{
         Todo{
             todo,
-            active: true,
+            checked: false,
             is_editing: false,
 
         }
@@ -35,7 +35,7 @@ impl Visuals {
 }
 
 pub struct Todos {
-    pub todos: Vec<(String, bool)>,
+    pub todos: Vec<Todo>,
     pub new_todo: String,
     pub filter: Filter,
     pub(crate) visuals: Visuals,

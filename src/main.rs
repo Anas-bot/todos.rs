@@ -57,7 +57,7 @@ impl eframe::App for Todos {
                         .margin(vec2(16.0, 8.0)),
                 );
                 if text_edit.lost_focus() && ui.input(|i| i.key_pressed(Key::Enter)) {
-                    self.todos.push((self.new_todo.clone(), false));
+                    self.todos.push(Todo::new(self.new_todo.clone()));
                     self.new_todo.clear();
                 }
                 ui.add_space(VERTICAL_SPACING);
@@ -65,9 +65,9 @@ impl eframe::App for Todos {
 
             ui.horizontal(|ui| {
                 ui.add_space(HORIZONTAL_SPACING);
-                if self.todos.len() == 1 && !self.todos[0].1 {
+                if self.todos.len() == 1 && !self.todos[0].checked {
                     ui.label(RichText::new("1 task left").size(NORMAL_FONT_SIZE));
-                } else if self.todos.len() == 1 && self.todos[0].1 {
+                } else if self.todos.len() == 1 && self.todos[0].checked {
                     ui.label(RichText::new("0 tasks left").size(NORMAL_FONT_SIZE));
                 } else {
                     ui.label(
@@ -114,36 +114,37 @@ impl eframe::App for Todos {
 
             if !self.todos.is_empty() {
                 for (index, todo) in self.todos.iter_mut().enumerate() {
+
                     ui.add_space(VERTICAL_SPACING);
                     ui.horizontal(|ui| {
                         ui.add_space(HORIZONTAL_SPACING);
                         match self.filter {
                             Filter::Completed => {
-                                if todo.1 {
+                                if todo.checked {
                                     ui.add(Checkbox::new(
-                                        &mut todo.1,
-                                        RichText::new(&todo.0).size(CHECKBOX_TEXT_FONT_SIZE),
+                                        &mut todo.checked,
+                                        RichText::new(&todo.todo).size(CHECKBOX_TEXT_FONT_SIZE),
                                     ));
                                 }
                             }
                             Filter::Active => {
-                                if !todo.1 {
+                                if !todo.checked {
                                     ui.add(Checkbox::new(
-                                        &mut todo.1,
-                                        RichText::new(&todo.0).size(CHECKBOX_TEXT_FONT_SIZE),
+                                        &mut todo.checked,
+                                        RichText::new(&todo.todo).size(CHECKBOX_TEXT_FONT_SIZE),
                                     ));
                                 }
                             }
                             Filter::All => {
                                 ui.add(Checkbox::new(
-                                    &mut todo.1,
-                                    RichText::new(&todo.0).size(CHECKBOX_TEXT_FONT_SIZE),
+                                    &mut todo.checked,
+                                    RichText::new(&todo.todo).size(CHECKBOX_TEXT_FONT_SIZE),
                                 ));
                             }
                         }
 
-                        if (self.filter == Filter::Completed && todo.1)
-                            || (self.filter == Filter::Active && !todo.1)
+                        if (self.filter == Filter::Completed && todo.checked)
+                            || (self.filter == Filter::Active && !todo.checked)
                             || (self.filter == Filter::All)
                         {
                             ui.with_layout(
