@@ -117,6 +117,15 @@ impl eframe::App for Todos {
                     ui.add_space(VERTICAL_SPACING);
                     ui.horizontal(|ui| {
                         ui.add_space(HORIZONTAL_SPACING);
+                        if todo.is_editing {
+                            let text_edit = ui.add(TextEdit::singleline(&mut todo.todo).font(FontId {
+                                size: CHECKBOX_TEXT_FONT_SIZE,
+                                family: Default::default(),
+                            })
+                                .margin(vec2(8.0, 4.0)));
+                        }
+
+                        else {
                         match self.filter {
                             Filter::Completed => {
                                 if todo.checked {
@@ -156,11 +165,12 @@ impl eframe::App for Todos {
                                 if bin_image_button.clicked() {
                                     self.to_delete_todos.push(index);
                                 }
-                                if edit_image_button.clicked(){
+                                if edit_image_button.clicked() {
                                     todo.is_editing = true;
                                 }
                             });
                         }
+                    }
                     });
                 }
             }
