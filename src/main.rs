@@ -114,7 +114,6 @@ impl eframe::App for Todos {
 
             if !self.todos.is_empty() {
                 for (index, todo) in self.todos.iter_mut().enumerate() {
-
                     ui.add_space(VERTICAL_SPACING);
                     ui.horizontal(|ui| {
                         ui.add_space(HORIZONTAL_SPACING);
@@ -147,19 +146,20 @@ impl eframe::App for Todos {
                             || (self.filter == Filter::Active && !todo.checked)
                             || (self.filter == Filter::All)
                         {
-                            ui.with_layout(
-                                Layout::right_to_left(Align::Center),
-                                |ui| {
-                                    ui.add_space(HORIZONTAL_SPACING);
-                                    let bin_image_button = ui.add(ImageButton::new(
-                                        self.visuals.bin_img_texture_handle.texture_id(ctx),
-                                        IMAGE_DIMENSIONS,
-                                    ));
-                                    if bin_image_button.clicked() {
-                                        self.to_delete_todos.push(index);
-                                    }
-                                },
-                            );
+                            ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                                ui.add_space(HORIZONTAL_SPACING);
+                                let bin_image_button = ui.add(ImageButton::new(
+                                    self.visuals.bin_img_texture_handle.texture_id(ctx),
+                                    IMAGE_DIMENSIONS,
+                                ));
+                                let edit_image_button = ui.add(ImageButton::new(self.visuals.edit_img_texture_handle.texture_id(ctx), IMAGE_DIMENSIONS));
+                                if bin_image_button.clicked() {
+                                    self.to_delete_todos.push(index);
+                                }
+                                if edit_image_button.clicked(){
+                                    todo.is_editing = true;
+                                }
+                            });
                         }
                     });
                 }

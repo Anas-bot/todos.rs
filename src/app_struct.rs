@@ -2,19 +2,18 @@ use crate::constants::TRANSPARENT;
 use eframe::egui::Color32;
 use egui_extras::RetainedImage;
 
-pub struct Todo{
+pub struct Todo {
     pub todo: String,
     pub checked: bool,
     pub is_editing: bool,
 }
 
 impl Todo {
-    pub fn new(todo: String) -> Self{
-        Todo{
+    pub fn new(todo: String) -> Self {
+        Todo {
             todo,
             checked: false,
             is_editing: false,
-
         }
     }
 }
@@ -24,6 +23,7 @@ pub struct Visuals {
     pub completed_button_bg_color: Color32,
     pub active_button_bg_color: Color32,
     pub bin_img_texture_handle: RetainedImage,
+    pub edit_img_texture_handle: RetainedImage,
 }
 
 impl Visuals {
@@ -65,6 +65,11 @@ impl Default for Todos {
                     include_bytes!("media/bin.png"),
                 )
                 .expect("reasons"),
+                edit_img_texture_handle: RetainedImage::from_image_bytes(
+                    "edit",
+                    include_bytes!("media/edit.png"),
+                )
+                    .expect("reasons"),
             },
             to_delete_todos: vec![],
         }
