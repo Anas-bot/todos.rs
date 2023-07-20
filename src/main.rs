@@ -16,6 +16,8 @@ fn main() {
         max_window_size: Some(vec2(WIN_WIDTH, WIN_HEIGHT)),
         ..eframe::NativeOptions::default()
     };
+
+
     run_native(
         "todos.rs",
         native_options,
@@ -157,10 +159,15 @@ impl eframe::App for Todos {
                                 }
                             }
                             Filter::All => {
-                                ui.add(Checkbox::new(
-                                    &mut todo.checked,
-                                    RichText::new(&todo.todo).size(CHECKBOX_TEXT_FONT_SIZE),
-                                ));
+                                ui.horizontal_wrapped(|ui|{
+                                    ui.spacing_mut().icon_width = IMAGE_DIMENSIONS.x;
+                                    ui.set_max_width(280.0);
+                                    ui.add(Checkbox::without_text(
+                                        &mut todo.checked
+                                    ));
+                                    ui.label(RichText::new(&todo.todo).size(CHECKBOX_TEXT_FONT_SIZE))
+
+                                });
                             }
                         }
 
@@ -168,13 +175,14 @@ impl eframe::App for Todos {
                             || (self.filter == Filter::Active && !todo.checked)
                             || (self.filter == Filter::All)
                         {
-                            ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+                            ui.with_layout(Layout::right_to_left(Align::Max), |ui| {
                                 ui.add_space(HORIZONTAL_SPACING);
                                 let bin_image_button = ui.add(ImageButton::new(
                                     self.visuals.bin_img_texture_handle.texture_id(ctx),
                                     IMAGE_DIMENSIONS,
                                 ));
                                 let edit_image_button = ui.add(ImageButton::new(self.visuals.edit_img_texture_handle.texture_id(ctx), IMAGE_DIMENSIONS));
+                                ui.add_space(10.0);
                                 if bin_image_button.clicked() {
                                     self.to_delete_todos.push(index);
                                 }
