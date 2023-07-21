@@ -22,11 +22,11 @@ fn main() {
         native_options,
         Box::new(|cc| Box::new(Todos::new(cc))),
     )
-    .expect("TODO: panic message");
+        .expect("TODO: panic message");
 }
 
 impl Todos {
-    fn new(cc: &eframe::CreationContext<'_>) -> Self {
+    fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         Self::default()
     }
 
@@ -39,7 +39,7 @@ impl Todos {
 }
 
 impl eframe::App for Todos {
-    fn update(&mut self, ctx: &Context, frame: &mut Frame) {
+    fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
         CentralPanel::default().show(ctx, |ui| {
             ui.vertical_centered(|ui| {
                 ui.add_space(40.0);
