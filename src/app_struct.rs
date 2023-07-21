@@ -69,7 +69,7 @@ impl Default for Todos {
                     "edit",
                     include_bytes!("media/edit.png"),
                 )
-                    .expect("reasons"),
+                .expect("reasons"),
             },
             to_delete_todos: vec![],
         }

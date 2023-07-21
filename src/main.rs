@@ -22,7 +22,7 @@ fn main() {
         native_options,
         Box::new(|cc| Box::new(Todos::new(cc))),
     )
-        .expect("TODO: panic message");
+    .expect("TODO: panic message");
 }
 
 impl Todos {
