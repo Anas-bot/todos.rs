@@ -171,11 +171,11 @@ impl eframe::App for Todos {
                             }
                         }
 
-                        if (self.filter == Filter::Completed && todo.checked)
+                        if (self.filter == Filter::Completed && todo.checked) //Make this bit the outer part to get the alignment to work?
                             || (self.filter == Filter::Active && !todo.checked)
                             || (self.filter == Filter::All)
                         {
-                            ui.with_layout(Layout::right_to_left(Align::Max), |ui| {
+                            ui.with_layout(Layout::right_to_left(Align::Min), |ui| {
                                 ui.add_space(HORIZONTAL_SPACING);
                                 let bin_image_button = ui.add(ImageButton::new(
                                     self.visuals.bin_img_texture_handle.texture_id(ctx),
