@@ -1,6 +1,6 @@
 # todos.rs
 
-This is a todos gui app that's written in rust using the egui framework.
+This is a todos GUI app that's written in rust using the egui crate.
 
 ## Getting Started
 
