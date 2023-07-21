@@ -17,7 +17,6 @@ fn main() {
         ..eframe::NativeOptions::default()
     };
 
-
     run_native(
         "todos.rs",
         native_options,
@@ -120,12 +119,11 @@ impl eframe::App for Todos {
                     ui.horizontal(|ui| {
                         ui.add_space(HORIZONTAL_SPACING);
                         if todo.is_editing {
-
-                            let text_edit = ui.add(TextEdit::singleline(&mut todo.todo).font(FontId {
-                                size: CHECKBOX_TEXT_FONT_SIZE,
-                                family: Default::default(),
-                            })
-                                .margin(vec2(8.0, 4.0)));
+                            let text_edit =
+                                ui.add(TextEdit::singleline(&mut todo.todo).font(FontId {
+                                    size: CHECKBOX_TEXT_FONT_SIZE,
+                                    family: Default::default(),
+                                }));
 
                             if text_edit.lost_focus() && ui.input(|i| i.key_pressed(Key::Enter)) {
                                 todo.is_editing = false;
@@ -133,65 +131,78 @@ impl eframe::App for Todos {
 
                             ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                                 ui.add_space(HORIZONTAL_SPACING);
-                                let tick_image_button = ui.add(ImageButton::new(self.visuals.tick_img_texture_handle.texture_id(ctx), IMAGE_DIMENSIONS));
-                                if tick_image_button.clicked(){
+                                let tick_image_button = ui.add(ImageButton::new(
+                                    self.visuals.tick_img_texture_handle.texture_id(ctx),
+                                    IMAGE_DIMENSIONS,
+                                ));
+                                if tick_image_button.clicked() {
                                     todo.is_editing = false;
                                 }
                             });
-                        }
-
-                        else {
-                        match self.filter {
-                            Filter::Completed => {
-                                if todo.checked {
-                                    ui.add(Checkbox::new(
-                                        &mut todo.checked,
-                                        RichText::new(&todo.todo).size(CHECKBOX_TEXT_FONT_SIZE),
-                                    ));
+                        } else {
+                            match self.filter {
+                                Filter::Completed => {
+                                    if todo.checked {
+                                        ui.horizontal_wrapped(|ui| {
+                                            ui.spacing_mut().icon_width = IMAGE_DIMENSIONS.x;
+                                            ui.set_max_width(TEXT_MAX_WIDTH);
+                                            ui.add(Checkbox::without_text(&mut todo.checked));
+                                            ui.label(
+                                                RichText::new(&todo.todo)
+                                                    .size(CHECKBOX_TEXT_FONT_SIZE),
+                                            )
+                                        });
+                                    }
+                                }
+                                Filter::Active => {
+                                    if !todo.checked {
+                                        ui.horizontal_wrapped(|ui| {
+                                            ui.spacing_mut().icon_width = IMAGE_DIMENSIONS.x;
+                                            ui.set_max_width(TEXT_MAX_WIDTH);
+                                            ui.add(Checkbox::without_text(&mut todo.checked));
+                                            ui.label(
+                                                RichText::new(&todo.todo)
+                                                    .size(CHECKBOX_TEXT_FONT_SIZE),
+                                            )
+                                        });
+                                    }
+                                }
+                                Filter::All => {
+                                    ui.horizontal_wrapped(|ui| {
+                                        ui.spacing_mut().icon_width = IMAGE_DIMENSIONS.x;
+                                        ui.set_max_width(TEXT_MAX_WIDTH);
+                                        ui.add(Checkbox::without_text(&mut todo.checked));
+                                        ui.label(
+                                            RichText::new(&todo.todo).size(CHECKBOX_TEXT_FONT_SIZE),
+                                        )
+                                    });
                                 }
                             }
-                            Filter::Active => {
-                                if !todo.checked {
-                                    ui.add(Checkbox::new(
-                                        &mut todo.checked,
-                                        RichText::new(&todo.todo).size(CHECKBOX_TEXT_FONT_SIZE),
-                                    ));
-                                }
-                            }
-                            Filter::All => {
-                                ui.horizontal_wrapped(|ui|{
-                                    ui.spacing_mut().icon_width = IMAGE_DIMENSIONS.x;
-                                    ui.set_max_width(280.0);
-                                    ui.add(Checkbox::without_text(
-                                        &mut todo.checked
-                                    ));
-                                    ui.label(RichText::new(&todo.todo).size(CHECKBOX_TEXT_FONT_SIZE))
 
+                            if (self.filter == Filter::Completed && todo.checked)
+                                || (self.filter == Filter::Active && !todo.checked)
+                                || (self.filter == Filter::All)
+                            {
+                                ui.with_layout(Layout::right_to_left(Align::Min), |ui| {
+                                    ui.add_space(HORIZONTAL_SPACING);
+                                    let bin_image_button = ui.add(ImageButton::new(
+                                        self.visuals.bin_img_texture_handle.texture_id(ctx),
+                                        IMAGE_DIMENSIONS,
+                                    ));
+                                    let edit_image_button = ui.add(ImageButton::new(
+                                        self.visuals.edit_img_texture_handle.texture_id(ctx),
+                                        IMAGE_DIMENSIONS,
+                                    ));
+                                    ui.add_space(10.0);
+                                    if bin_image_button.clicked() {
+                                        self.to_delete_todos.push(index);
+                                    }
+                                    if edit_image_button.clicked() {
+                                        todo.is_editing = true;
+                                    }
                                 });
                             }
                         }
-
-                        if (self.filter == Filter::Completed && todo.checked) //Make this bit the outer part to get the alignment to work?
-                            || (self.filter == Filter::Active && !todo.checked)
-                            || (self.filter == Filter::All)
-                        {
-                            ui.with_layout(Layout::right_to_left(Align::Min), |ui| {
-                                ui.add_space(HORIZONTAL_SPACING);
-                                let bin_image_button = ui.add(ImageButton::new(
-                                    self.visuals.bin_img_texture_handle.texture_id(ctx),
-                                    IMAGE_DIMENSIONS,
-                                ));
-                                let edit_image_button = ui.add(ImageButton::new(self.visuals.edit_img_texture_handle.texture_id(ctx), IMAGE_DIMENSIONS));
-                                ui.add_space(10.0);
-                                if bin_image_button.clicked() {
-                                    self.to_delete_todos.push(index);
-                                }
-                                if edit_image_button.clicked() {
-                                    todo.is_editing = true;
-                                }
-                            });
-                        }
-                    }
                     });
                 }
             }

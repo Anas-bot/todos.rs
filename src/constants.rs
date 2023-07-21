@@ -1,5 +1,5 @@
-use eframe::egui::Color32;
 use eframe::egui::vec2;
+use eframe::egui::Color32;
 
 pub const WIN_WIDTH: f32 = 390.0;
 pub const WIN_HEIGHT: f32 = 550.0;
@@ -20,4 +20,5 @@ pub const HORIZONTAL_SPACING: f32 = 20.0;
 pub const SPACING_BETWEEN_BUTTONS: f32 = 12.0;
 pub const BUTTON_ROUNDING: f32 = 4.0;
 
-pub const IMAGE_DIMENSIONS: egui::Vec2 = vec2(15.0, 15.0);
+pub const IMAGE_DIMENSIONS: egui::Vec2 = vec2(16.0, 16.0);
+pub const TEXT_MAX_WIDTH: f32 = 280.0;
