@@ -24,6 +24,7 @@ pub struct Visuals {
     pub active_button_bg_color: Color32,
     pub bin_img_texture_handle: RetainedImage,
     pub edit_img_texture_handle: RetainedImage,
+    pub tick_img_texture_handle: RetainedImage,
 }
 
 impl Visuals {
@@ -40,6 +41,8 @@ pub struct Todos {
     pub filter: Filter,
     pub(crate) visuals: Visuals,
     pub to_delete_todos: Vec<usize>,
+    pub tab: Tab,
+
 }
 
 #[derive(Default, PartialEq)]
@@ -48,6 +51,12 @@ pub enum Filter {
     All,
     Active,
     Completed,
+}
+#[derive(Default)]
+pub enum Tab {
+    #[default]
+    Todos,
+    Timer,
 }
 
 impl Default for Todos {
@@ -70,8 +79,14 @@ impl Default for Todos {
                     include_bytes!("media/edit.png"),
                 )
                 .expect("reasons"),
+                tick_img_texture_handle: RetainedImage::from_image_bytes(
+                    "edit",
+                    include_bytes!("media/check.png"),
+                )
+                    .expect("reasons"),
             },
             to_delete_todos: vec![],
+            tab: Default::default(),
         }
     }
 }
