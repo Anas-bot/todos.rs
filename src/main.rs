@@ -3,13 +3,15 @@ use crate::constants::*;
 
 use eframe::egui::{vec2, Context, FontId, RichText};
 use eframe::{egui, run_native, Frame};
-use egui::{Align, Button, CentralPanel, Checkbox, Color32, ImageButton, Key, Layout, Margin, TextEdit, TopBottomPanel};
 use egui::style::Spacing;
+use egui::{
+    Align, Button, CentralPanel, Checkbox, Color32, ImageButton, Key, Layout, Margin, TextEdit,
+    TopBottomPanel,
+};
 use egui_extras::RetainedImage;
 
 mod app_struct;
 mod constants;
-
 
 fn main() {
     let native_options = eframe::NativeOptions {
@@ -27,6 +29,8 @@ fn main() {
     .expect("TODO: panic message");
 }
 
+fn todos() {}
+
 impl Todos {
     fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         Self::default()
@@ -42,25 +46,42 @@ impl Todos {
 
 impl eframe::App for Todos {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
-        TopBottomPanel::top("tabs").show_separator_line(true).frame(egui::containers::Frame{
-            outer_margin: Margin{
-                left: 0.0,
-                ..Margin::default()
-            },
-            fill: Color32::from_rgba_premultiplied(27, 27, 27, 255),
-            ..egui::containers::Frame::default()
-        }).show(ctx, |ui|{
-            ui.horizontal(|ui|{
-                ui.spacing_mut().item_spacing = vec2(0.0, 0.0);
-                let todos_tab_btn = ui.add(
-                    Button::new(RichText::new("todos").size(18.0))
-                        .rounding(BUTTON_ROUNDING));
+        TopBottomPanel::top("tabs")
+            .show_separator_line(true)
+            .frame(egui::containers::Frame {
+                outer_margin: Margin {
+                    left: 0.0,
+                    ..Margin::default()
+                },
+                fill: Color32::from_rgba_premultiplied(27, 27, 27, 255),
+                ..egui::containers::Frame::default()
+            })
+            .show(ctx, |ui| {
+                ui.horizontal(|ui| {
+                    ui.spacing_mut().item_spacing = vec2(0.0, 0.0);
+                    let todos_tab_btn = ui.add(
+                        Button::new(RichText::new("todos").size(18.0))
+                            .rounding(BUTTON_ROUNDING)
+                            .fill(self.visuals.todos_button_bg_color),
+                    );
 
-                let todos_tab_btn = ui.add(
-                    Button::new(RichText::new("timer").size(18.0))
-                        .rounding(BUTTON_ROUNDING).fill(TRANSPARENT));
+                    let timer_tab_btn = ui.add(
+                        Button::new(RichText::new("timer").size(18.0))
+                            .rounding(BUTTON_ROUNDING)
+                            .fill(self.visuals.timer_button_bg_color),
+                    );
+
+                    if timer_tab_btn.clicked() {
+                        self.visuals.todos_button_bg_color = TRANSPARENT;
+                        self.visuals.timer_button_bg_color = DARK_GREY;
+                    } else if todos_tab_btn.clicked()
+                        && self.visuals.todos_button_bg_color == TRANSPARENT
+                    {
+                        self.visuals.todos_button_bg_color = DARK_GREY;
+                        self.visuals.timer_button_bg_color = TRANSPARENT;
+                    };
+                });
             });
-        });
         CentralPanel::default().show(ctx, |ui| {
             ui.vertical_centered(|ui| {
                 ui.add_space(40.0);
