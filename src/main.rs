@@ -1,13 +1,15 @@
 use crate::app_struct::*;
 use crate::constants::*;
 
-use eframe::egui::{vec2, Color32, Context, FontId, RichText};
+use eframe::egui::{vec2, Context, FontId, RichText};
 use eframe::{egui, run_native, Frame};
-use egui::{Align, Button, CentralPanel, Checkbox, ImageButton, Key, Layout, TextEdit};
+use egui::{Align, Button, CentralPanel, Checkbox, Color32, ImageButton, Key, Layout, Margin, TextEdit, TopBottomPanel};
+use egui::style::Spacing;
 use egui_extras::RetainedImage;
 
 mod app_struct;
 mod constants;
+
 
 fn main() {
     let native_options = eframe::NativeOptions {
@@ -40,6 +42,25 @@ impl Todos {
 
 impl eframe::App for Todos {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
+        TopBottomPanel::top("tabs").show_separator_line(true).frame(egui::containers::Frame{
+            outer_margin: Margin{
+                left: 0.0,
+                ..Margin::default()
+            },
+            fill: Color32::from_rgba_premultiplied(27, 27, 27, 255),
+            ..egui::containers::Frame::default()
+        }).show(ctx, |ui|{
+            ui.horizontal(|ui|{
+                ui.spacing_mut().item_spacing = vec2(0.0, 0.0);
+                let todos_tab_btn = ui.add(
+                    Button::new(RichText::new("todos").size(18.0))
+                        .rounding(BUTTON_ROUNDING));
+
+                let todos_tab_btn = ui.add(
+                    Button::new(RichText::new("timer").size(18.0))
+                        .rounding(BUTTON_ROUNDING).fill(TRANSPARENT));
+            });
+        });
         CentralPanel::default().show(ctx, |ui| {
             ui.vertical_centered(|ui| {
                 ui.add_space(40.0);

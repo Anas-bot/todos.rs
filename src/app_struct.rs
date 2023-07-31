@@ -1,6 +1,9 @@
 use crate::constants::TRANSPARENT;
 use eframe::egui::Color32;
 use egui_extras::RetainedImage;
+use std::time;
+use egui::accesskit::Role::Time;
+use egui::Style;
 
 pub struct Todo {
     pub todo: String,
@@ -44,6 +47,21 @@ pub struct Todos {
     pub tab: Tab,
 
 }
+
+struct Timer{
+    duration: String,
+    pause_at: Option<String>,
+}
+
+impl Timer{
+    fn new(duration: String) -> Self{
+        Timer{
+            duration,
+            pause_at: None,
+        }
+    }
+}
+
 
 #[derive(Default, PartialEq)]
 pub enum Filter {
