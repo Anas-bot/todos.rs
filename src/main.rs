@@ -12,6 +12,7 @@ use egui_extras::RetainedImage;
 
 mod app_struct;
 mod constants;
+mod app;
 
 fn main() {
     let native_options = eframe::NativeOptions {
@@ -37,9 +38,7 @@ fn todos_tab(todos: &mut Todos, ctx: &Context) {
             ui.add_space(VERTICAL_SPACING);
             let text_edit = ui.add(
                 TextEdit::singleline(&mut todos.new_todo)
-                    .hint_text(
-                        RichText::new("What needs to be done?").size(PLACEHOLDER_FONT_SIZE),
-                    )
+                    .hint_text(RichText::new("What needs to be done?").size(PLACEHOLDER_FONT_SIZE))
                     .font(FontId {
                         size: PLACEHOLDER_FONT_SIZE,
                         family: Default::default(),
@@ -109,11 +108,10 @@ fn todos_tab(todos: &mut Todos, ctx: &Context) {
                 ui.horizontal(|ui| {
                     ui.add_space(HORIZONTAL_SPACING);
                     if todo.is_editing {
-                        let text_edit =
-                            ui.add(TextEdit::singleline(&mut todo.todo).font(FontId {
-                                size: CHECKBOX_TEXT_FONT_SIZE,
-                                family: Default::default(),
-                            }));
+                        let text_edit = ui.add(TextEdit::singleline(&mut todo.todo).font(FontId {
+                            size: CHECKBOX_TEXT_FONT_SIZE,
+                            family: Default::default(),
+                        }));
 
                         if text_edit.lost_focus() && ui.input(|i| i.key_pressed(Key::Enter)) {
                             todo.is_editing = false;
@@ -138,8 +136,7 @@ fn todos_tab(todos: &mut Todos, ctx: &Context) {
                                         ui.set_max_width(TEXT_MAX_WIDTH);
                                         ui.add(Checkbox::without_text(&mut todo.checked));
                                         ui.label(
-                                            RichText::new(&todo.todo)
-                                                .size(CHECKBOX_TEXT_FONT_SIZE),
+                                            RichText::new(&todo.todo).size(CHECKBOX_TEXT_FONT_SIZE),
                                         )
                                     });
                                 }
@@ -151,8 +148,7 @@ fn todos_tab(todos: &mut Todos, ctx: &Context) {
                                         ui.set_max_width(TEXT_MAX_WIDTH);
                                         ui.add(Checkbox::without_text(&mut todo.checked));
                                         ui.label(
-                                            RichText::new(&todo.todo)
-                                                .size(CHECKBOX_TEXT_FONT_SIZE),
+                                            RichText::new(&todo.todo).size(CHECKBOX_TEXT_FONT_SIZE),
                                         )
                                     });
                                 }
@@ -202,6 +198,49 @@ fn todos_tab(todos: &mut Todos, ctx: &Context) {
     });
 }
 
+fn timer(ctx: &Context){
+
+    CentralPanel::default().show(ctx, |ui| {
+        ui.add_space(40.0);
+        ui.vertical_centered(|ui|{
+            ui.label(RichText::new("timer.rs").size(HEADING_FONT_SIZE));
+            ui.add_space(VERTICAL_SPACING);
+            ui.label(RichText::new("00:00").size(30.0));
+            ui.add_space(VERTICAL_SPACING * 2);
+
+        ui.horizontal(|ui|{
+            let (left, right) = {
+                let rect = ui.available_rect_before_wrap();
+                let mut left_half = rect.clone();
+                left_half.set_right(rect.center().x);
+                let mut right_half = rect.clone();
+                right_half.set_left(rect.center().x);
+                (left_half, right_half)
+            };
+
+            ui.allocate_ui_at_rect(left, |ui| {
+                ui.with_layout(Layout::right_to_left(Align::Center), |ui|{
+                    ui.add_space(15.0);
+                    ui.button(RichText::new("Start").size(25.0))
+                });
+            });
+
+            ui.allocate_ui_at_rect(right, |ui| {
+                ui.with_layout(Layout::left_to_right(Align::Center), |ui|{
+                    ui.add_space(15.0);
+                    ui.button(RichText::new("Stop").size(25.0))
+                });
+            });
+        });
+
+        });
+
+
+    });
+
+}
+//49.7 -> stop
+//51.8 -> start
 impl Todos {
     fn new(_cc: &eframe::CreationContext<'_>) -> Self {
         Self::default()
@@ -218,7 +257,7 @@ impl Todos {
 impl eframe::App for Todos {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
         TopBottomPanel::top("tabs")
-            .show_separator_line(true)
+            .show_separator_line(false)
             .frame(egui::containers::Frame {
                 outer_margin: Margin {
                     left: 0.0,
@@ -253,19 +292,15 @@ impl eframe::App for Todos {
                         self.visuals.timer_button_bg_color = TRANSPARENT;
                         self.tab = Tab::Todos
                     };
-
-
-
                 });
             });
-        match self.tab{
+        match self.tab {
             Tab::Todos => {
                 todos_tab(self, ctx);
             }
             Tab::Timer => {
-                todo!()
+                timer(ctx);
             }
         }
-
     }
 }
