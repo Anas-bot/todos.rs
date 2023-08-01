@@ -219,3 +219,44 @@ pub fn timer(ctx: &Context){
     });
 
 }
+
+pub fn tabs(todos: &mut Todos, ctx: &Context){
+    TopBottomPanel::top("tabs")
+        .show_separator_line(true)
+        .frame(egui::containers::Frame {
+            outer_margin: Margin {
+                left: 0.0,
+                ..Margin::default()
+            },
+            fill: Color32::from_rgba_premultiplied(27, 27, 27, 255),
+            ..egui::containers::Frame::default()
+        })
+        .show(ctx, |ui| {
+            ui.horizontal(|ui| {
+                ui.spacing_mut().item_spacing = vec2(0.0, 0.0);
+                let todos_tab_btn = ui.add(
+                    Button::new(RichText::new("todos").size(18.0))
+                        .rounding(BUTTON_ROUNDING)
+                        .fill(todos.visuals.todos_button_bg_color),
+                );
+
+                let timer_tab_btn = ui.add(
+                    Button::new(RichText::new("timer").size(18.0))
+                        .rounding(BUTTON_ROUNDING)
+                        .fill(todos.visuals.timer_button_bg_color),
+                );
+
+                if timer_tab_btn.clicked() {
+                    todos.visuals.todos_button_bg_color = TRANSPARENT;
+                    todos.visuals.timer_button_bg_color = DARK_GREY;
+                    todos.tab = Tab::Timer;
+                } else if todos_tab_btn.clicked()
+                    && todos.visuals.todos_button_bg_color == TRANSPARENT
+                {
+                    todos.visuals.todos_button_bg_color = DARK_GREY;
+                    todos.visuals.timer_button_bg_color = TRANSPARENT;
+                    todos.tab = Tab::Todos
+                };
+            });
+        });
+}
