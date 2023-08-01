@@ -49,6 +49,20 @@ pub struct Todos {
     pub tab: Tab,
 }
 
+impl Todos {
+    pub fn new(_cc: &eframe::CreationContext<'_>) -> Self {
+        Self::default()
+    }
+
+    pub fn remove_todo(&mut self) {
+        for index in &self.to_delete_todos {
+            self.todos.remove(*index);
+        }
+        self.to_delete_todos.clear()
+    }
+}
+
+
 struct Timer {
     duration: String,
     pause_at: Option<String>,
