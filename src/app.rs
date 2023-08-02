@@ -2,13 +2,10 @@ use crate::app_struct::*;
 use crate::constants::*;
 
 use eframe::egui::{vec2, Context, FontId, RichText};
-use eframe::{egui, run_native, Frame};
+use eframe::egui;
+use egui::{Align, Button, CentralPanel, Checkbox, Color32, ImageButton, Key, Layout, Margin, Style, TextEdit, TopBottomPanel};
+use egui::Align::Center;
 use egui::style::Spacing;
-use egui::{
-    Align, Button, CentralPanel, Checkbox, Color32, ImageButton, Key, Layout, Margin, TextEdit,
-    TopBottomPanel,
-};
-use egui_extras::RetainedImage;
 
 pub fn todos_tab(todos: &mut Todos, ctx: &Context) {
     CentralPanel::default().show(ctx, |ui| {
@@ -178,49 +175,80 @@ pub fn todos_tab(todos: &mut Todos, ctx: &Context) {
     });
 }
 
-pub fn timer(ctx: &Context){
-
+pub fn timer(todos: &mut Todos, ctx: &Context) {
     CentralPanel::default().show(ctx, |ui| {
         ui.add_space(40.0);
-        ui.vertical_centered(|ui|{
+        ui.vertical_centered(|ui| {
             ui.label(RichText::new("timer.rs").size(HEADING_FONT_SIZE));
             ui.add_space(VERTICAL_SPACING);
-            ui.label(RichText::new("00:00").size(30.0));
-            ui.add_space(VERTICAL_SPACING * 2.0);
-
-            ui.horizontal(|ui|{
-                let (left, right) = {
-                    let rect = ui.available_rect_before_wrap();
-                    let mut left_half = rect.clone();
-                    left_half.set_right(rect.center().x);
-                    let mut right_half = rect.clone();
-                    right_half.set_left(rect.center().x);
-                    (left_half, right_half)
-                };
-
-                ui.allocate_ui_at_rect(left, |ui| {
-                    ui.with_layout(Layout::right_to_left(Align::Center), |ui|{
-                        ui.add_space(15.0);
-                        ui.button(RichText::new("Start").size(25.0))
-                    });
-                });
-
-                ui.allocate_ui_at_rect(right, |ui| {
-                    ui.with_layout(Layout::left_to_right(Align::Center), |ui|{
-                        ui.add_space(15.0);
-                        ui.button(RichText::new("Stop").size(25.0))
-                    });
-                });
+        });
+        ui.horizontal(|ui|{
+            ui.spacing_mut().button_padding = vec2(20.0, 2.0);
+            ui.add_space(10.0);
+            ui.label(RichText::new("Duration:").size(NORMAL_FONT_SIZE));
+            let text_edit = ui.add(
+                TextEdit::singleline(&mut todos.timer_app.duration.0)
+                    .hint_text(RichText::new("Hours").size(NORMAL_FONT_SIZE)).desired_width(100.0)
+                    .font(FontId {
+                        size: NORMAL_FONT_SIZE,
+                        family: Default::default(),
+                    })
+            );
+            let text_edit = ui.add(
+                TextEdit::singleline(&mut todos.timer_app.duration.1)
+                    .hint_text(RichText::new("mins").size(NORMAL_FONT_SIZE)).desired_width(100.0)
+                    .font(FontId {
+                        size: NORMAL_FONT_SIZE,
+                        family: Default::default(),
+                    })
+            );
+            ui.with_layout(Layout::right_to_left(Center), |ui|{
+                ui.add_space(10.0);
+                let start_btn = ui.add(
+                    Button::new(RichText::new("Start").size(NORMAL_FONT_SIZE))
+                );
             });
 
         });
+//I need to create a timer instance and then manipulate the structs items, I already have the constructor setup.
 
 
+        // ui.vertical_centered(|ui| {
+        //     ui.label(RichText::new("timer.rs").size(HEADING_FONT_SIZE));
+        //     ui.add_space(VERTICAL_SPACING);
+        //     ui.label(RichText::new("00:00").size(30.0));
+        //     // ui.add_space(VERTICAL_SPACING * 2.0);
+        //
+        //     ui.horizontal(|ui| {
+        //
+        //         let (left, right) = {
+        //             let rect = ui.available_rect_before_wrap();
+        //             let mut left_half = rect.clone();
+        //             left_half.set_right(rect.center().x);
+        //             let mut right_half = rect.clone();
+        //             right_half.set_left(rect.center().x);
+        //             (left_half, right_half)
+        //         };
+        //
+        //         ui.allocate_ui_at_rect(left, |ui| {
+        //             ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
+        //                 ui.add_space(15.0);
+        //                 ui.button(RichText::new("Start").size(25.0))
+        //             });
+        //         });
+        //
+        //         ui.allocate_ui_at_rect(right, |ui| {
+        //             ui.with_layout(Layout::left_to_right(Align::Center), |ui| {
+        //                 ui.add_space(15.0);
+        //                 ui.button(RichText::new("Stop").size(25.0))
+        //             });
+        //         });
+        //     });
+        // });
     });
-
 }
 
-pub fn tabs(todos: &mut Todos, ctx: &Context){
+pub fn tabs(todos: &mut Todos, ctx: &Context) {
     TopBottomPanel::top("tabs")
         .show_separator_line(true)
         .frame(egui::containers::Frame {
@@ -239,7 +267,7 @@ pub fn tabs(todos: &mut Todos, ctx: &Context){
                         .rounding(BUTTON_ROUNDING)
                         .fill(todos.visuals.todos_button_bg_color),
                 );
-
+                ui.add_space(10.0);
                 let timer_tab_btn = ui.add(
                     Button::new(RichText::new("timer").size(18.0))
                         .rounding(BUTTON_ROUNDING)

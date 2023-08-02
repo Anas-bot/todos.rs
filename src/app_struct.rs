@@ -1,7 +1,5 @@
 use crate::constants::{DARK_GREY, TRANSPARENT};
 use eframe::egui::Color32;
-use egui::accesskit::Role::Time;
-use egui::Style;
 use egui_extras::RetainedImage;
 use std::time;
 
@@ -47,6 +45,7 @@ pub struct Todos {
     pub visuals: Visuals,
     pub to_delete_todos: Vec<usize>,
     pub tab: Tab,
+    pub timer_app: Timer,
 }
 
 impl Todos {
@@ -62,17 +61,20 @@ impl Todos {
     }
 }
 
-
-struct Timer {
-    duration: String,
-    pause_at: Option<String>,
+pub struct Timer {
+    pub duration: (String, String),
+    pub current_value: String,
+    pub pause_at: Option<String>,
+    pub started: bool,
 }
 
-impl Timer {
-    fn new(duration: String) -> Self {
-        Timer {
-            duration,
+impl Default for Timer{
+    fn default() -> Self {
+        Timer{
+            duration: ("".to_string(), "".to_string()),
+            current_value: "".to_string(),
             pause_at: None,
+            started: false,
         }
     }
 }
@@ -121,6 +123,7 @@ impl Default for Todos {
             },
             to_delete_todos: vec![],
             tab: Default::default(),
+            timer_app: Default::default(),
         }
     }
 }

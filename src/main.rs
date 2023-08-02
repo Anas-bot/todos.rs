@@ -1,19 +1,13 @@
 use crate::app_struct::*;
 use crate::constants::*;
 
-use eframe::egui::{vec2, Context, FontId, RichText};
-use eframe::{egui, run_native, Frame};
-use egui::style::Spacing;
-use egui::{
-    Align, Button, CentralPanel, Checkbox, Color32, ImageButton, Key, Layout, Margin, TextEdit,
-    TopBottomPanel,
-};
-use egui_extras::RetainedImage;
 use crate::app::*;
+use eframe::egui::{vec2, Context};
+use eframe::{egui, run_native, Frame};
 
+mod app;
 mod app_struct;
 mod constants;
-mod app;
 
 fn main() {
     let native_options = eframe::NativeOptions {
@@ -31,10 +25,13 @@ fn main() {
     .expect("TODO: panic message");
 }
 
-
 impl eframe::App for Todos {
     fn update(&mut self, ctx: &Context, _frame: &mut Frame) {
-        //Call the tabs associated function to display the tabs
+        //call the tabs associated function to display the tabs
+
+        //I create an instance everytime I loop :c
+        // I think I should just add the timer struct to the main app struct
+
         tabs(self, ctx);
 
         match self.tab {
@@ -42,7 +39,8 @@ impl eframe::App for Todos {
                 todos_tab(self, ctx);
             }
             Tab::Timer => {
-                timer(ctx);
+
+                timer(self, ctx);
             }
         }
     }
