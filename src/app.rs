@@ -183,29 +183,32 @@ pub fn timer(todos: &mut Todos, ctx: &Context) {
             ui.add_space(VERTICAL_SPACING);
         });
         ui.horizontal(|ui|{
-            ui.spacing_mut().button_padding = vec2(20.0, 2.0);
+            ui.spacing_mut().button_padding = vec2(20.0, 1.0);
             ui.add_space(10.0);
             ui.label(RichText::new("Duration:").size(NORMAL_FONT_SIZE));
             let text_edit = ui.add(
                 TextEdit::singleline(&mut todos.timer_app.duration.0)
-                    .hint_text(RichText::new("Hours").size(NORMAL_FONT_SIZE)).desired_width(100.0)
+                    .hint_text(RichText::new("Hours").size(NORMAL_FONT_SIZE)).
+                    desired_width(95.0)
                     .font(FontId {
                         size: NORMAL_FONT_SIZE,
                         family: Default::default(),
                     })
             );
-            let text_edit = ui.add(
-                TextEdit::singleline(&mut todos.timer_app.duration.1)
-                    .hint_text(RichText::new("mins").size(NORMAL_FONT_SIZE)).desired_width(100.0)
-                    .font(FontId {
-                        size: NORMAL_FONT_SIZE,
-                        family: Default::default(),
-                    })
-            );
+
             ui.with_layout(Layout::right_to_left(Center), |ui|{
                 ui.add_space(10.0);
                 let start_btn = ui.add(
                     Button::new(RichText::new("Start").size(NORMAL_FONT_SIZE))
+                );
+                let text_edit = ui.add(
+                    TextEdit::singleline(&mut todos.timer_app.duration.1)
+                        .hint_text(RichText::new("mins").size(NORMAL_FONT_SIZE)).
+                        desired_width(95.0)
+                        .font(FontId {
+                            size: NORMAL_FONT_SIZE,
+                            family: Default::default(),
+                        })
                 );
             });
 
